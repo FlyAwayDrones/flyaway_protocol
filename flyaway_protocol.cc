@@ -13,8 +13,11 @@ int8_t create_manual_control_frame(fad_frame *frame_t, char *buff, uint16_t len,
   frame_t->msg_id = FLYAWAY_MANUAL_CONTROL;
   fad_manual_control *mc = (fad_manual_control*) frame_t->payload;
   //printf("x=%u y=%u, z=%u", mc->x, mc->y, mc->z);
-
-  serialize_frame(frame_t, buff, len);
+	Serial.print("x="); Serial.println(manual_control.x);
+	Serial.print("y="); Serial.println(manual_control.y);
+	Serial.print("z="); Serial.println(manual_control.z);
+  
+	serialize_frame(frame_t, buff, len);
 
   return 0;
 }
@@ -37,7 +40,7 @@ void serialize_frame(fad_frame *frame_t, char *buff, uint16_t len)
     default: break;
   }
 
-  for(int i = 1, k = 0; i < buff_len; i++, k++){
+  for(int i = 1, k = 0; i <= buff_len; i++, k++){
     buff[i] = *((char *) frame_t->payload + k);
     //printf("int=%u ", buff[i]);
   }
@@ -66,7 +69,12 @@ void decode_serialized_frame(char *buff, uint16_t len)
 void decode_manual_control_frame(char *buff, fad_manual_control* manual_control)
 {
     uint16_t i = 1;
-    manual_control->x = buff[i] + buff[i+1];
-    manual_control->y = buff[i+2] + buff[i+3];
-    manual_control->z = buff[i+4] + buff[i+5];
+    manual_control->x = buff[1] + buff[2];
+    manual_control->y = buff[3] + buff[4];
+    manual_control->z = buff[5] + buff[6];// tem um bug no z
+#if ENABLE_DEBUG
+		printf("%u %u\n", buff[1], buff[2]);
+		printf("%u %u\n", buff[3], buff[4]);
+		printf("%u %u\n", buff[5], buff[6]);
+#endif
 }

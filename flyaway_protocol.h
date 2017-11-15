@@ -5,6 +5,8 @@
 #include <stdint.h>
 #endif // STDINT_H
 
+#define ENABLE_DEBUG true 
+
 //#include <stdlib.h>
 //#include <stdio.h>
 
